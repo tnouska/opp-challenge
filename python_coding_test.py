@@ -5,7 +5,7 @@ __doc__ = """
 OppSource Python programming test v0.1.2 2018-05-30.
 
 Consider the following classes, which make up the foundation of a
-(very) simple account-based marketing platform. This programming 
+(very) simple account-based marketing platform. This programming
 test will require you to modify and extend its behavior to meet
 certain business goals.
 
@@ -50,42 +50,73 @@ class SalesRep(object):
         self._accounts.remove(account)
         account.set_sales_rep(None)
 
-        
-# +----------------------------------------------------------------------------+
-# |                                                                            |
-# | Q1-1. Management has determined that it would be useful to organize        |
-# |       Accounts by market segments, so that SalesReps can specialize        |
-# |       in selling to particular segments and thus improve the number        |
-# |       of sales opportunities they generate.                                |
-# |                                                                            |
-# |       Implement the MarketSegment class. A MarketSegment must be           |
-# |       instantiated with a name, but it may also receive an iterable of     |
-# |       Accounts which will be associated with it. MarketSegments must       |
-# |       keep track of which Accounts they're associated with. Additionally,  |
-# |       the MarketSegment class must know how to add and remove Accounts     |
-# |       from itself.                                                         |
-# |                                                                            |
-# |       Additionally, modify the Account class so that it supports the       |
-# |       following MarketSegment-related use cases:                           |
-# |       - An Account may be instantiated with an iterable of MarketSegments  |
-# |         to which it's related.                                             |
-# |       - An Account can provide an iterable of the MarketSegments it's      |
-# |         related to.                                                        |
-# |       - An Account can be related to a new MarketSegment.                  |
-# |       - An Account can be removed from one of the MarketSegments it's      |
-# |         related to.                                                        |
-# |                                                                            |
-# |       A MarketSegment may be associated with more than one Account, and    |
-# |       and Account may be associated with more than one MarketSegment.      |                                                    |
-# |                                                                            |
-# +----------------------------------------------------------------------------+
-       
+
+# +---------------------------------------------------------------------------+
+# |                                                                           |
+# | Q1-1. Management has determined that it would be useful to organize       |
+# |       Accounts by market segments, so that SalesReps can specialize       |
+# |       in selling to particular segments and thus improve the number       |
+# |       of sales opportunities they generate.                               |
+# |                                                                           |
+# |       Implement the MarketSegment class. A MarketSegment must be          |
+# |       instantiated with a name, but it may also receive an iterable of    |
+# |       Accounts which will be associated with it. MarketSegments must      |
+# |       keep track of which Accounts they're associated with. Additionally, |
+# |       the MarketSegment class must know how to add and remove Accounts    |
+# |       from itself.                                                        |
+# |                                                                           |
+# |       Additionally, modify the Account class so that it supports the      |
+# |       following MarketSegment-related use cases:                          |
+# |       - An Account may be instantiated with an iterable of MarketSegments |
+# |         to which it's related.                                            |
+# |       - An Account can provide an iterable of the MarketSegments it's     |
+# |         related to.                                                       |
+# |       - An Account can be related to a new MarketSegment.                 |
+# |       - An Account can be removed from one of the MarketSegments it's     |
+# |         related to.                                                       |
+# |                                                                           |
+# |       A MarketSegment may be associated with more than one Account, and   |
+# |       and Account may be associated with more than one MarketSegment.     |
+# |                                                                           |
+# +---------------------------------------------------------------------------+
+
 class MarketSegment(object):
     """
     Models a MarketSegment. MarketSegments know their name and contain an
     iterable of the Accounts they're related to.
     """
-    pass
+    def __init__(self, market_name, accounts=None):
+        """
+        creating base structure when class is called
+        """
+        self.market_name = market_name
+        # will set the name of the MarketSegment to whatever is passed into
+        # the first position when calling the class.
+        self._accounts = []
+        # accounts=None will set a default of no accounts
+        if accounts:
+            self._accounts.extend(accounts)
+        # "if accounts:" will check if any accounts are passed into the
+        # calling of a new instance of MarketSegment class then it will
+        # extend the list by appending elements from the iterable
+
+    def add_account(self, account):
+        """
+        Will be able to add accounts to the instance of MarketSegment
+        inside of the _accounts property.
+        """
+        self._accounts.append(account)
+        # will take the account object from the method call and append it to
+        # the _accountslist of the MarketSegment class
+
+    def remove_account(self, account):
+        """
+        Will be able to remove accounts from the _accounts property of 
+        the MarketSegment class
+        """
+        self._accounts.remove(account)
+        # will take the account object and remove the first occurance
+        # of value from _accounts
 
 
 class Account(object):
@@ -102,70 +133,71 @@ class Account(object):
 
     def get_sales_rep(self):
         return self._sales_rep
-    
+
     def set_sales_rep(self, sales_rep):
         self._sales_rep = sales_rep
 
     def set_market_segments(self, segments):
         """
-        Q1-2. Implement this method, which takes an iterable of MarketSegments to
-              which this Account will be attached. This method REPLACES all
-              MarketSegment associations, so be sure to update each MarketSegment's
-              internal representation of associated Accounts appropriately.
+        Q1-2. Implement this method, which takes an iterable of MarketSegments
+              to which this Account will be attached. This method REPLACES all
+              MarketSegment associations, so be sure to update each
+              MarketSegment's internal representation of associated Accounts
+              appropriately.
         """
         raise NotImplementedError()
 
 
-# +----------------------------------------------------------------------------+
-# |                                                                            |
-# | Q2-1. After reviewing your work on Q1, your manager provides you with      |
-# |       a new requirement: Account-MarketSegment relations must be unique.   |
-# |       An informative ValueError should be raised if a user tries to relate |
-# |       an Account to a MarketSegment it is already a part of.               |
-# |                                                                            |
-# |       Write a test suite that validates that this requirement is           |
-# |       enforced correctly (or not).                                         |
-# |                                                                            |
-# | Q2-2. If necessary, modify the MarketSegment and Account classes so        |
-# |       that the the tests you wrote in Q2-1 pass.                           |
-# |                                                                            |
-# | Q2-Bonus. If necessary, modify your solution to Q2-2 so that it            |
-# |           uses the Account's name as the basis for determining             |
-# |           whether a particular Account-MarketSegment relation is           |
-# |           unique.                                                          |
-# |                                                                            |
-# +----------------------------------------------------------------------------+
+# +---------------------------------------------------------------------------+
+# |                                                                           |
+# | Q2-1. After reviewing your work on Q1, your manager provides you with     |
+# |       a new requirement: Account-MarketSegment relations must be unique.  |
+# |       An informative ValueError should be raised if a user tries to relate|
+# |       an Account to a MarketSegment it is already a part of.              |
+# |                                                                           |
+# |       Write a test suite that validates that this requirement is          |
+# |       enforced correctly (or not).                                        |
+# |                                                                           |
+# | Q2-2. If necessary, modify the MarketSegment and Account classes so       |
+# |       that the the tests you wrote in Q2-1 pass.                          |
+# |                                                                           |
+# | Q2-Bonus. If necessary, modify your solution to Q2-2 so that it           |
+# |           uses the Account's name as the basis for determining            |
+# |           whether a particular Account-MarketSegment relation is          |
+# |           unique.                                                         |
+# |                                                                           |
+# +---------------------------------------------------------------------------+
 
 
 # +----------------------------------------------------------------------------+
-# |                                                                            |
-# | Q3. Create a new kind of Account, called a ChildAccount. A ChildAccount    |
-# |     behaves exactly like an Account, but its constructor takes an          |
-# |     additional "parent" argument, which represents the Account which       |
-# |     this ChildAccount is a child of.                                       |
-# |                                                                            |
-# |     During initialization, A ChildAccount should be assigned to its        |
-# |     parent's SalesRep if no SalesRep is provided. Likewise, a ChildAccount |
-# |     should be added to its parent's MarketSegments if no MarketSegments    |
-# |     are provided.                                                          |
-# |                                                                            |
-# |     It is permissible for a ChildAccount to have another ChildAccount as   |
-# |     its parent.                                                            |
-# |                                                                            |
-# +----------------------------------------------------------------------------+
+# |                                                                           |
+# | Q3. Create a new kind of Account, called a ChildAccount. A ChildAccount   |
+# |     behaves exactly like an Account, but its constructor takes an         |
+# |     additional "parent" argument, which represents the Account which      |
+# |     this ChildAccount is a child of.                                      |
+# |                                                                           |
+# |     During initialization, A ChildAccount should be assigned to its       |
+# |     parent's SalesRep if no SalesRep is provided. Likewise, a ChildAccount|
+# |     should be added to its parent's MarketSegments if no MarketSegments   |
+# |     are provided.                                                         |
+# |                                                                           |
+# |     It is permissible for a ChildAccount to have another ChildAccount as  |
+# |     its parent.                                                           |
+# |                                                                           |
+# +---------------------------------------------------------------------------+
 
 
-# +----------------------------------------------------------------------------+
-# |                                                                            |
-# |  Q4. Implement the following function "print_tree".  This function must    |
-# |      take an Account as input, though you may modify its signature to      |
-# |      take other parameters as well. This function prints the Account's     |
-# |      name, SalesRep and MarketSegments, as well as each of its children,   |
-# |      their name, SalesReps and MarketSegments (and their children, etc.)   |
-# |                                                                            |
-# |      The output should visually indicate the parent/child relationships.   |
-# |                                                                            |
-# +----------------------------------------------------------------------------+
+# +---------------------------------------------------------------------------+
+# |                                                                           |
+# |  Q4. Implement the following function "print_tree".  This function must   |
+# |      take an Account as input, though you may modify its signature to     |
+# |      take other parameters as well. This function prints the Account's    |
+# |      name, SalesRep and MarketSegments, as well as each of its children,  |
+# |      their name, SalesReps and MarketSegments (and their children, etc.)  |
+# |                                                                           |
+# |      The output should visually indicate the parent/child relationships.  |
+# |                                                                           |
+# +---------------------------------------------------------------------------+
 
 def print_tree(account):
     """ In the example output below, "GE" is the root account, "Jet Engines"
@@ -182,16 +214,16 @@ def print_tree(account):
     raise NotImplementedError()
 
 
-# +----------------------------------------------------------------------------+
-# |                                                                            |
-# |  Q5-1. Devise a SQL schema that could be used to persist the data          |
-# |        represented by the SalesRep, MarketSegment, and Account classes     |
-# |        above. Do not consider the ChildAccount class for this exercise.    |
-# |        Make sure to preserve relationships between the classes as well as  |
-# |        the data contained within each class.                               |
-# |                                                                            |
-# |  Q5-2. Write a SQL statement that uses the schema you devised in Q5-1 to   |
-# |        fetch the name and SalesRep name for all of the accounts that are   |
-# |        related to the "Consumer Goods" market segment.                     |
-# |                                                                            |
-# +----------------------------------------------------------------------------+
+# +---------------------------------------------------------------------------+
+# |                                                                           |
+# |  Q5-1. Devise a SQL schema that could be used to persist the data         |
+# |        represented by the SalesRep, MarketSegment, and Account classes    |
+# |        above. Do not consider the ChildAccount class for this exercise.   |
+# |        Make sure to preserve relationships between the classes as well as |
+# |        the data contained within each class.                              |
+# |                                                                           |
+# |  Q5-2. Write a SQL statement that uses the schema you devised in Q5-1 to  |
+# |        fetch the name and SalesRep name for all of the accounts that are  |
+# |        related to the "Consumer Goods" market segment.                    |
+# |                                                                           |
+# +---------------------------------------------------------------------------+
